@@ -3,7 +3,7 @@ FROM python:3.8-slim
 ENV POSTGRES_USER lezaadmin  
 ENV POSTGRES_PASSWORD StrongP@ssword1212 
 ENV POSTGRES_DB leza-award-db
-ENV DEBUG True
+ENV DEBUG False
 ENV URL https://leza-award-backend.greenmoss-076a1cd8.francecentral.azurecontainerapps.io/
 ENV AZURE_ACCOUNT_NAME lezastoragev100
 ENV AZURE_ACCOUNT_KEY Fbmz+x083HxEZ9O21cQr4O8xZyXj4FpeNevGE8Ckd3aWyUPjLB4BGyzZ0giMnh2OqKLW8uHHctC9+ASt4pkTdw==
