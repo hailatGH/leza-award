@@ -2,6 +2,9 @@ import os
 import django
 from pathlib import Path
 from urllib.parse import urlparse
+from django.utils.encoding import force_str
+    
+django.utils.encoding.force_text = force_str
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -112,6 +115,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 MEDIA_URL = 'Media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static/'),
+]
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
@@ -122,23 +129,14 @@ REST_FRAMEWORK = {
     ]
 }
 
-if not DEBUG:
-    import django
-    from django.utils.encoding import force_str
-    
-    django.utils.encoding.force_text = force_str
+AZURE_ACCOUNT_NAME = os.environ.get('AZURE_ACCOUNT_NAME')
+AZURE_ACCOUNT_KEY = os.environ.get('AZURE_ACCOUNT_KEY')
+AZURE_LOCATION = os.environ.get('AZURE_LOCATION')
+AZURE_CONTAINER = os.environ.get('AZURE_LOCATION')
+AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
 
-    STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, 'static/'),
-    ]
-    AZURE_ACCOUNT_NAME = os.environ.get('AZURE_ACCOUNT_NAME')
-    AZURE_ACCOUNT_KEY = os.environ.get('AZURE_ACCOUNT_KEY')
-    AZURE_LOCATION = os.environ.get('AZURE_LOCATION')
-    AZURE_CONTAINER = os.environ.get('AZURE_LOCATION')
-    AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
+STATIC_LOCATION = 'static'
+STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
 
-    STATIC_LOCATION = 'static'
-    STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
-
-    STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
-    # DEFAULT_FILE_STORAGE = 'core.custom_storage.AzureMediaStorage'
+STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+# DEFAULT_FILE_STORAGE = 'core.custom_storage.AzureMediaStorage'
