@@ -14,14 +14,14 @@ DEBUG = False
 if os.environ.get('DEBUG') == "True":
     DEBUG = True
 
-URL = os.environ.get('URL', "*")
+URL = os.environ.get('URL')
 
 if URL:
-    if DEBUG:
-        ALLOWED_HOSTS = list(URL.split(','))
-    else:
-        ALLOWED_HOSTS = [urlparse(URL).netloc]
-        CSRF_TRUSTED_ORIGINS = [URL]
+    # if DEBUG:
+    #     ALLOWED_HOSTS = list(URL.split(','))
+    # else:
+    ALLOWED_HOSTS = [urlparse(URL).netloc]
+    CSRF_TRUSTED_ORIGINS = [URL]
 else:
     ALLOWED_HOSTS = ["*"]
 
