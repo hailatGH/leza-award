@@ -1,6 +1,8 @@
 import os
 import django
 from pathlib import Path
+from urllib.parse import urlparse
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-5vxjrkj0@3kok#r(0-$l3co7q1omml%444!18&37xocwp-v#6-')
@@ -107,22 +109,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
-# MEDIA_URL = 'Media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, '/static/'),
-]
-AZURE_ACCOUNT_NAME = 'lezastorage'
-AZURE_ACCOUNT_KEY = 'w4Ysb4YIrD1iTFIFgP3jA7NIbrCtI+p7bcq/9EeEmqEgpdfqElwxpJ7Bfh1hfzcVP/jCY9mdiWL0+AStDYphDg=='
-AZURE_LOCATION = 'leza'
-AZURE_CONTAINER = 'leza'
-AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
-
-STATIC_LOCATION = 'static'
-STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
-
-STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
-DEFAULT_FILE_STORAGE = 'core.custom_storage.AzureMediaStorage'
+MEDIA_URL = 'Media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -137,7 +125,6 @@ REST_FRAMEWORK = {
 if not DEBUG:
     import django
     from django.utils.encoding import force_str
-    from urllib.parse import urlparse
     
     django.utils.encoding.force_text = force_str
 
