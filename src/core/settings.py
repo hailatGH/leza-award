@@ -106,8 +106,8 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, '/static/')
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 MEDIA_URL = 'Media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
@@ -129,7 +129,7 @@ if not DEBUG:
     django.utils.encoding.force_text = force_str
 
     STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, '/static/'),
+        os.path.join(BASE_DIR, 'static/'),
     ]
     AZURE_ACCOUNT_NAME = os.environ.get('AZURE_ACCOUNT_NAME')
     AZURE_ACCOUNT_KEY = os.environ.get('AZURE_ACCOUNT_KEY')
