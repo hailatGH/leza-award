@@ -13,12 +13,12 @@ ENV PYTHONUNBUFFERED 1
 
 COPY ./src /app
 
-RUN /py/bin/python manage.py makemigrations && \
-    /py/bin/python manage.py makemigrations accounts && \
-    /py/bin/python manage.py makemigrations vote && \
-    /py/bin/python manage.py migrate && \
-    /py/bin/python manage.py migrate accounts && \
-    /py/bin/python manage.py migrate vote && \
-    /py/bin/python manage.py migrate --run-syncdb 
+# RUN /py/bin/python manage.py makemigrations && \
+#     /py/bin/python manage.py makemigrations accounts && \
+#     /py/bin/python manage.py makemigrations vote && \
+#     /py/bin/python manage.py migrate && \
+#     /py/bin/python manage.py migrate accounts && \
+#     /py/bin/python manage.py migrate vote && \
+#     /py/bin/python manage.py migrate --run-syncdb 
 
 EXPOSE 8000
