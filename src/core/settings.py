@@ -17,11 +17,11 @@ if os.environ.get('DEBUG') == "True":
 URL = os.environ.get('URL')
 
 if URL:
-    # if DEBUG:
-    #     ALLOWED_HOSTS = list(URL.split(','))
-    # else:
-    ALLOWED_HOSTS = [urlparse(URL).netloc]
-    CSRF_TRUSTED_ORIGINS = [URL]
+    if DEBUG:
+        ALLOWED_HOSTS = list(URL.split(','))
+    else:
+        ALLOWED_HOSTS = [urlparse(URL).netloc]
+        CSRF_TRUSTED_ORIGINS = [URL]
 else:
     ALLOWED_HOSTS = ["*"]
 
@@ -81,8 +81,8 @@ DATABASES = {
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
         'HOST': os.environ.get('POSTGRES_HOST'),
-        'PORT': '5432',
-        'OPTIONS': {'sslmode': 'require'}
+        'PORT': '5432'
+        # 'OPTIONS': {'sslmode': 'require'}
     }
 }
 
@@ -110,13 +110,10 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-STATIC_ROOT = 'staticfiles/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 MEDIA_URL = 'Media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-
-STATICFILES_DIRS = ['static/',]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -128,14 +125,18 @@ REST_FRAMEWORK = {
     ]
 }
 
-AZURE_ACCOUNT_NAME = os.environ.get('AZURE_ACCOUNT_NAME')
-AZURE_ACCOUNT_KEY = os.environ.get('AZURE_ACCOUNT_KEY')
-AZURE_LOCATION = os.environ.get('AZURE_LOCATION')
-AZURE_CONTAINER = os.environ.get('AZURE_LOCATION')
-AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
+if not DEBUG:
+    STATIC_ROOT = 'staticfiles/'
+    STATICFILES_DIRS = ['static/',]
 
-STATIC_LOCATION = 'static'
-STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
+    AZURE_ACCOUNT_NAME = os.environ.get('AZURE_ACCOUNT_NAME')
+    AZURE_ACCOUNT_KEY = os.environ.get('AZURE_ACCOUNT_KEY')
+    AZURE_LOCATION = os.environ.get('AZURE_LOCATION')
+    AZURE_CONTAINER = os.environ.get('AZURE_LOCATION')
+    AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
 
-STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
-# DEFAULT_FILE_STORAGE = 'core.custom_storage.AzureMediaStorage'
+    STATIC_LOCATION = 'static'
+    STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
+
+    STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+    # DEFAULT_FILE_STORAGE = 'core.custom_storage.AzureMediaStorage'

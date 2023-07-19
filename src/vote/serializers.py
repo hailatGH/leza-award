@@ -8,6 +8,9 @@ class CategorySerializer(serializers.ModelSerializer):
         model = CategoryModel
         fields = '__all__'
         
+    def list(self, queryset):
+        return "super().list(queryset)"
+        
 class CandidateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CandidateModel
@@ -17,3 +20,10 @@ class VoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = VoteModel
         fields = '__all__'
+        
+    validators = [
+        UniqueTogetherValidator(
+            queryset=VoteModel.objects.all(),
+            fields=['category', 'candidate', 'ipv4', 'finger_print']
+        )
+    ]

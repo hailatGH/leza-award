@@ -30,7 +30,7 @@ class CategoryViewSet(ModelViewSet):
         if not request.user.has_perm('vote.view_categorymodel'):
             return Response({'message': 'You do not have permission to access this resource.'}, status=403)
         return super().list(request, *args, **kwargs)
-    
+        
     def destroy(self, request, *args, **kwargs):
         if not request.user.has_perm('vote.delete_categorymodel'):
             return Response({'message': 'You do not have permission to access this resource.'}, status=403)

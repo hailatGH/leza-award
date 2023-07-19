@@ -15,6 +15,7 @@ class CategoryModel(models.Model):
     category_description = models.CharField(
         null=True, blank=True, max_length=4096)
     category_coverImage = models.ImageField(null=False, blank=True, upload_to=Category_Profile_Images, validators=[validate_image])
+    is_top_category = models.BooleanField(null=False, blank=False, default=False)
     encoder_ID = models.CharField(null=False, blank=True, max_length=1023)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -67,8 +68,11 @@ class VoteModel(models.Model):
         
     category = models.ForeignKey(CategoryModel, on_delete=models.DO_NOTHING)
     candidate = models.ForeignKey(CandidateModel, on_delete=models.DO_NOTHING)
-    # Votter info start
     
+    # Votter info start
+    ipv4 = models.GenericIPAddressField(blank=False, null=False, default="0.0.0.0")
+    finger_print = models.CharField(blank=False, null=False, default="finger_print")
     # Votter info end
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
