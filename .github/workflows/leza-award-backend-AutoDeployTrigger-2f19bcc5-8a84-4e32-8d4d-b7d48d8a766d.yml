@@ -1,0 +1,42 @@
+name: Trigger auto deployment for leza-award-backend
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - '**'
+    - '.github/workflows/leza-award-backend-AutoDeployTrigger-2f19bcc5-8a84-4e32-8d4d-b7d48d8a766d.yml'
+
+  # Allow mannually trigger 
+  workflow_dispatch:
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.LEZAAWARDBACKEND_AZURE_CREDENTIALS }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          appSourcePath: ${{ github.workspace }} 
+          registryUrl: lezacontainerregistery.azurecr.io
+          registryUsername: ${{ secrets.LEZAAWARDBACKEND_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.LEZAAWARDBACKEND_REGISTRY_PASSWORD }}
+          containerAppName: leza-award-backend
+          resourceGroup: LezaAwardDevelopmentResourceGroup
+          imageToBuild: lezacontainerregistery.azurecr.io/leza-award-backend:${{ github.sha }}
+          
+
+     
+
