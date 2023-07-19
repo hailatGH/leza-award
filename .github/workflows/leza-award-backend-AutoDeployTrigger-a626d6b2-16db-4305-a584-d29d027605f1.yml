@@ -11,32 +11,49 @@ on:
     - '.github/workflows/leza-award-backend-AutoDeployTrigger-a626d6b2-16db-4305-a584-d29d027605f1.yml'
 
   # Allow mannually trigger 
-  workflow_dispatch:
-      
+  workflow_dispatch:     
+
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout to the branch
         uses: actions/checkout@v2
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to container registry
+        uses: docker/login-action@v1
+        with:
+          registry: lezacontainerregistery.azurecr.io
+          username: ${{ secrets.LEZAAWARDBACKEND_REGISTRY_USERNAME }}
+          password: ${{ secrets.LEZAAWARDBACKEND_REGISTRY_PASSWORD }}
+
+      - name: Build and push container image to registry
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: lezacontainerregistery.azurecr.io/leza-award-backend:${{ github.sha }}
+          file: ./Dockerfile
+          context: ./
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.LEZAAWARDBACKEND_AZURE_CREDENTIALS }}
 
-      - name: Build and push container image to registry
-        uses: azure/container-apps-deploy-action@v1
+      - name: Deploy to containerapp
+        uses: azure/CLI@v1
         with:
-          appSourcePath: ${{ github.workspace }} 
-          registryUrl: lezacontainerregistery.azurecr.io
-          registryUsername: ${{ secrets.LEZAAWARDBACKEND_REGISTRY_USERNAME }}
-          registryPassword: ${{ secrets.LEZAAWARDBACKEND_REGISTRY_PASSWORD }}
-          containerAppName: leza-award-backend
-          resourceGroup: LezaAwardDevelopmentResourceGroup
-          imageToBuild: lezacontainerregistery.azurecr.io/leza-award-backend:${{ github.sha }}
-          dockerfilePath: Dockerfile
-
-     
-
+          inlineScript: |
+            az config set extension.use_dynamic_install=yes_without_prompt
+            az containerapp registry set -n leza-award-backend -g LezaAwardDevelopmentResourceGroup --server lezacontainerregistery.azurecr.io --username  ${{ secrets.LEZAAWARDBACKEND_REGISTRY_USERNAME }} --password ${{ secrets.LEZAAWARDBACKEND_REGISTRY_PASSWORD }}
+            az containerapp update -n leza-award-backend -g LezaAwardDevelopmentResourceGroup --image lezacontainerregistery.azurecr.io/leza-award-backend:${{ github.sha }}
