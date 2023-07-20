@@ -5,8 +5,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: leza:latest
-    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --noinput && exec gunicorn --bind 0.0.0.0:8000 --workers 1 --threads 8 --timeout 0 core.wsgi:application"
+    image: lezacontainerregistery.azurecr.io/leza-award-backend-api:latest
+    command: sh -c "python manage.py makemigrations && python manage.py makemigrations accounts && python manage.py makemigrations vote && python manage.py migrate && python manage.py migrate accounts && python manage.py migrate vote && python manage.py migrate --run-syncdb && python manage.py collectstatic --noinput && exec gunicorn --bind 0.0.0.0:8000 --workers 1 --threads 8 --timeout 0 core.wsgi:application"
     ports:
       - "8000:8000"
     volumes:
@@ -21,6 +21,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_HOST=db
+      - LOCAL=True
 
   db:
     image: postgres
