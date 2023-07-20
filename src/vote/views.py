@@ -35,7 +35,7 @@ class CategoryViewSet(ModelViewSet):
         if not request.user.has_perm('vote.delete_categorymodel'):
             return Response({'message': 'You do not have permission to access this resource.'}, status=403)
         return super().destroy(request, *args, **kwargs)
-
+        
 
 class CandidateViewSet(ModelViewSet):
     queryset = CandidateModel.objects.all().order_by('id')
