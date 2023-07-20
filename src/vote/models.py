@@ -72,7 +72,6 @@ class VoteModel(models.Model):
     # Votter info start
     ipv4 = models.GenericIPAddressField(blank=False, null=False, default="0.0.0.0")
     finger_print = models.CharField(blank=False, null=False, default="finger_print")
-    finger_print2 = models.CharField(blank=False, null=False, default="finger_print")
     # Votter info end
     
     created_at = models.DateTimeField(auto_now_add=True)

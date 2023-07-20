@@ -10,20 +10,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-5vxjrkj0@3kok#r(0-$l3co7q1omml%444!18&37xocwp-v#6-')
 
-DEBUG = False
-if os.environ.get('DEBUG') == "True":
-    DEBUG = True
+DEBUG = True
+# if os.environ.get('DEBUG') == "True":
+#     DEBUG = True
 
-URL = os.environ.get('URL')
+URL = "https://leza-award-backend-api.proudmushroom-13eba283.francecentral.azurecontainerapps.io"
 
-if URL:
-    if DEBUG:
-        ALLOWED_HOSTS = list(URL.split(','))
-    else:
-        ALLOWED_HOSTS = [urlparse(URL).netloc]
-        CSRF_TRUSTED_ORIGINS = [URL]
-else:
-    ALLOWED_HOSTS = ["*"]
+# if URL:
+#     if DEBUG:
+#         ALLOWED_HOSTS = list(URL.split(','))
+#     else:
+#         ALLOWED_HOSTS = [urlparse(URL).netloc]
+#         CSRF_TRUSTED_ORIGINS = [URL]
+# else:
+#     ALLOWED_HOSTS = ["*"]
+
+ALLOWED_HOSTS = [urlparse(URL).netloc]
+CSRF_TRUSTED_ORIGINS = [URL]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -77,12 +80,12 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('POSTGRES_DB'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': os.environ.get('POSTGRES_HOST'),
-        'PORT': '5432'
-        # 'OPTIONS': {'sslmode': 'require'}
+        'NAME': "leza-award-db",
+        'USER': "lezaadmin",
+        'PASSWORD': "StrongP@ssword1212",
+        'HOST': "leza-award-db.postgres.database.azure.com",
+        'PORT': '5432',
+        'OPTIONS': {'sslmode': 'require'}
     }
 }
 
@@ -125,18 +128,18 @@ REST_FRAMEWORK = {
     ]
 }
 
-if not DEBUG:
-    STATIC_ROOT = 'staticfiles/'
-    STATICFILES_DIRS = ['static/',]
+# if not DEBUG:
+STATIC_ROOT = 'staticfiles/'
+STATICFILES_DIRS = ['static/',]
 
-    AZURE_ACCOUNT_NAME = os.environ.get('AZURE_ACCOUNT_NAME')
-    AZURE_ACCOUNT_KEY = os.environ.get('AZURE_ACCOUNT_KEY')
-    AZURE_LOCATION = os.environ.get('AZURE_LOCATION')
-    AZURE_CONTAINER = os.environ.get('AZURE_LOCATION')
-    AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
+AZURE_ACCOUNT_NAME = "lezastoragev100"
+AZURE_ACCOUNT_KEY = "Fbmz+x083HxEZ9O21cQr4O8xZyXj4FpeNevGE8Ckd3aWyUPjLB4BGyzZ0giMnh2OqKLW8uHHctC9+ASt4pkTdw=="
+AZURE_LOCATION = "lezastorage"
+AZURE_CONTAINER = "lezastorage"
+AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
 
-    STATIC_LOCATION = 'static'
-    STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
+STATIC_LOCATION = 'static'
+STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
 
-    STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
-    # DEFAULT_FILE_STORAGE = 'core.custom_storage.AzureMediaStorage'
+STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+# DEFAULT_FILE_STORAGE = 'core.custom_storage.AzureMediaStorage'
