@@ -42,7 +42,7 @@ class CandidateModel(models.Model):
     candidate_description = models.CharField(
         null=True, blank=True, max_length=4096)
     candidate_profileImage = models.ImageField(null=False, blank=True, upload_to=Candidate_Profile_Images, validators=[validate_image])
-    category = models.ManyToManyField(CategoryModel)
+    category = models.ManyToManyField(CategoryModel, related_name="candidates")
     encoder_ID = models.CharField(null=False, blank=True, max_length=1023)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

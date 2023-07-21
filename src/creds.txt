@@ -1,8 +1,0 @@
-db = leza-award-db
-db_name = leza-award-db
-db_user = lezaadmin
-db_password = StrongP@ssword1212
-
-URL = https://leza-award-backend.greenmoss-076a1cd8.francecentral.azurecontainerapps.io/
-
-storage = lezastoragev100

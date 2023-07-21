@@ -1,18 +1,12 @@
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated, BasePermission
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.status import HTTP_405_METHOD_NOT_ALLOWED
 
 
 from .models import CategoryModel, CandidateModel, VoteModel
 from .serializers import CategorySerializer, CandidateSerializer, VoteSerializer
-
-class CustomPermission(BasePermission):
-    def has_permission(self, request, view):
-        if view.action == 'list':  
-            return True
-        return request.user.is_authenticated
+from utils.custom_permissions import CustomPermission
 
 class CategoryViewSet(ModelViewSet):
     queryset = CategoryModel.objects.all().order_by('id')
