@@ -24,7 +24,8 @@ if URL:
         ALLOWED_HOSTS = list(URL.split(','))
     else:
         ALLOWED_HOSTS = [urlparse(URL).netloc]
-        CSRF_TRUSTED_ORIGINS = [URL, "http://localhost:5173"]
+        # CSRF_TRUSTED_ORIGINS = [URL]
+        CSRF_TRUSTED_ORIGINS = ['*']
 else:
     ALLOWED_HOSTS = ["*"]
 

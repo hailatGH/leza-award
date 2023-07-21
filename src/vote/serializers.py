@@ -3,18 +3,6 @@ from rest_framework.validators import UniqueTogetherValidator
 
 from .models import CategoryModel, CandidateModel, VoteModel
         
-class CandidateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CandidateModel
-        fields = '__all__'
-
-class CategorySerializer(serializers.ModelSerializer):
-    candidates = CandidateSerializer(many=True, read_only=True)
-    
-    class Meta:
-        model = CategoryModel
-        fields = '__all__'
-        
 class VoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = VoteModel
@@ -26,3 +14,15 @@ class VoteSerializer(serializers.ModelSerializer):
             fields=['category', 'candidate', 'ipv4', 'finger_print']
         )
     ]
+class CandidateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CandidateModel
+        fields = '__all__'
+        
+
+class CategorySerializer(serializers.ModelSerializer):
+    candidates = CandidateSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = CategoryModel
+        fields = '__all__'

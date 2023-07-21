@@ -82,7 +82,12 @@ class VoteViewSet(ModelViewSet):
 
     
     def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+        queryset = CategoryModel.objects.all()
+        serializer = CategorySerializer(queryset, many=True)
+        
+        for data in serializer.data:
+            print(data.candidates)
+        return Response(serializer.data)
     
     def destroy(self, request, *args, **kwargs):
         raise MethodNotAllowed(request.method, HTTP_405_METHOD_NOT_ALLOWED)
