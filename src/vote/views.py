@@ -1,15 +1,23 @@
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, BasePermission
+from rest_framework.exceptions import MethodNotAllowed
+from rest_framework.status import HTTP_405_METHOD_NOT_ALLOWED
+
 
 from .models import CategoryModel, CandidateModel, VoteModel
 from .serializers import CategorySerializer, CandidateSerializer, VoteSerializer
 
+class CustomPermission(BasePermission):
+    def has_permission(self, request, view):
+        if view.action == 'list':  
+            return True
+        return request.user.is_authenticated
 
 class CategoryViewSet(ModelViewSet):
     queryset = CategoryModel.objects.all().order_by('id')
     serializer_class = CategorySerializer
-    permission_classes=[IsAuthenticated, DjangoModelPermissions]
+    permission_classes=[CustomPermission]
     
     def create(self, request, *args, **kwargs):
         if not request.user.has_perm('vote.add_categorymodel'):
@@ -38,7 +46,7 @@ class CategoryViewSet(ModelViewSet):
 class CandidateViewSet(ModelViewSet):
     queryset = CandidateModel.objects.all().order_by('id')
     serializer_class = CandidateSerializer
-    permission_classes=[DjangoModelPermissions, IsAuthenticated]
+    permission_classes=[CustomPermission]
     
     def create(self, request, *args, **kwargs):
         if not request.user.has_perm('vote.add_candidatemodel'):
@@ -67,27 +75,20 @@ class CandidateViewSet(ModelViewSet):
 class VoteViewSet(ModelViewSet):
     queryset = VoteModel.objects.all().order_by('id')
     serializer_class = VoteSerializer
-    permission_classes=[DjangoModelPermissions, IsAuthenticated, IsAdminUser]
     
     def create(self, request, *args, **kwargs):
-        if not request.user.has_perm('vote.add_votemodel'):
-            return Response({'message': 'You do not have permission to access this resource.'}, status=403)
         return super().create(request, *args, **kwargs)
     
     def update(self, request, *args, **kwargs):
-        if not request.user.has_perm('vote.change_votemodel'):
-            return Response({'message': 'You do not have permission to access this resource.'}, status=403)
-        return super().update(request, *args, **kwargs)
+       raise MethodNotAllowed(request.method, HTTP_405_METHOD_NOT_ALLOWED)
+
     
     def retrieve(self, request, *args, **kwargs):
-        if not request.user.has_perm('vote.view_votemodel'):
-            return Response({'message': 'You do not have permission to access this resource.'}, status=403)
-        return super().retrieve(request, *args, **kwargs)
+        raise MethodNotAllowed(request.method, HTTP_405_METHOD_NOT_ALLOWED)
+
     
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
     
     def destroy(self, request, *args, **kwargs):
-        if not request.user.has_perm('vote.delete_votemodel'):
-            return Response({'message': 'You do not have permission to access this resource.'}, status=403)
-        return super().destroy(request, *args, **kwargs)
+        raise MethodNotAllowed(request.method, HTTP_405_METHOD_NOT_ALLOWED)
