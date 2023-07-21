@@ -85,8 +85,9 @@ class VoteViewSet(ModelViewSet):
         queryset = CategoryModel.objects.all()
         serializer = CategorySerializer(queryset, many=True)
         
-        for data in serializer.data:
-            print(data.candidates)
+        for category in serializer.data:
+            for candidate in category['candidates']:
+                candidate['percentage'] = (self.queryset.filter(category=category['id'], candidate=candidate['id']).count() / len(category['candidates'])) * 100
         return Response(serializer.data)
     
     def destroy(self, request, *args, **kwargs):
