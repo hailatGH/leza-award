@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',
     'rest_framework',
+    'storages',
     
     # Custom Apps
     'accounts', 
@@ -130,8 +131,9 @@ REST_FRAMEWORK = {
 }
 
 if not LOCAL:
-    STATIC_ROOT = 'staticfiles/'
-    STATICFILES_DIRS = ['static/',]
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, '/static/'),
+    ]
 
     AZURE_ACCOUNT_NAME = os.environ.get('AZURE_ACCOUNT_NAME')
     AZURE_ACCOUNT_KEY = os.environ.get('AZURE_ACCOUNT_KEY')
@@ -143,4 +145,4 @@ if not LOCAL:
     STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
 
     STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
-    # DEFAULT_FILE_STORAGE = 'core.custom_storage.AzureMediaStorage'
+    DEFAULT_FILE_STORAGE = 'core.custom_storage.AzureMediaStorage'
