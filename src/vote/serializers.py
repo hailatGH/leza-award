@@ -11,7 +11,23 @@ class VoteSerializer(serializers.ModelSerializer):
     validators = [
         UniqueTogetherValidator(
             queryset=VoteModel.objects.all(),
-            fields=['category', 'candidate', 'ipv4', 'finger_print']
+            fields=['category', 'candidate']
+        ),
+        UniqueTogetherValidator(
+            queryset=VoteModel.objects.all(),
+            fields=['category', 'ipv4']
+        ),
+        UniqueTogetherValidator(
+            queryset=VoteModel.objects.all(),
+            fields=['category', 'finger_print']
+        ),
+        UniqueTogetherValidator(
+            queryset=VoteModel.objects.all(),
+            fields=['candidate', 'ipv4']
+        ),
+        UniqueTogetherValidator(
+            queryset=VoteModel.objects.all(),
+            fields=['candidate', 'finger_print']
         )
     ]
 class CandidateSerializer(serializers.ModelSerializer):
