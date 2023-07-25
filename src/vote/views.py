@@ -24,8 +24,6 @@ class CategoryViewSet(ModelViewSet):
         return super().update(request, *args, **kwargs)
     
     def retrieve(self, request, *args, **kwargs):
-        if not request.user.has_perm('vote.view_categorymodel'):
-            return Response({'message': 'You do not have permission to access this resource.'}, status=403)
         return super().retrieve(request, *args, **kwargs)
     
     def list(self, request, *args, **kwargs):
@@ -53,8 +51,6 @@ class CandidateViewSet(ModelViewSet):
         return super().update(request, *args, **kwargs)
     
     def retrieve(self, request, *args, **kwargs):
-        if not request.user.has_perm('vote.view_candidatemodel'):
-            return Response({'message': 'You do not have permission to access this resource.'}, status=403)
         return super().retrieve(request, *args, **kwargs)
     
     def list(self, request, *args, **kwargs):
