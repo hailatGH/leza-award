@@ -25,7 +25,9 @@ if URL:
     else:
         ALLOWED_HOSTS = [urlparse(URL).netloc]
         CSRF_TRUSTED_ORIGINS = [URL]
-        CORS_ORIGIN_WHITELIST = ['http://localhost:5173']
+        # CORS_ORIGIN_WHITELIST = ['http://localhost:5173']
+        CORS_ALLOW_ALL_ORIGINS = True
+
 else:
     ALLOWED_HOSTS = ["*"]
 
