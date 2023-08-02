@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
+# from rest_framework.validators import UniqueTogetherValidator
 
 from .models import CategoryModel, CandidateModel, VoteModel
         
@@ -8,28 +8,17 @@ class VoteSerializer(serializers.ModelSerializer):
         model = VoteModel
         fields = '__all__'
         
-    validators = [
-        UniqueTogetherValidator(
-            queryset=VoteModel.objects.all(),
-            fields=['category', 'candidate']
-        ),
-        UniqueTogetherValidator(
-            queryset=VoteModel.objects.all(),
-            fields=['category', 'ipv4']
-        ),
-        UniqueTogetherValidator(
-            queryset=VoteModel.objects.all(),
-            fields=['category', 'finger_print']
-        ),
-        UniqueTogetherValidator(
-            queryset=VoteModel.objects.all(),
-            fields=['candidate', 'ipv4']
-        ),
-        UniqueTogetherValidator(
-            queryset=VoteModel.objects.all(),
-            fields=['candidate', 'finger_print']
-        )
-    ]
+    def create(self, validated_data):
+        category = validated_data.get('category')
+        ipv4 = validated_data.get('ipv4')
+        finger_print = validated_data.get('finger_print')
+        
+        if VoteModel.objects.filter(category=category, ipv4=ipv4, finger_print=finger_print).exists():
+            raise serializers.ValidationError('Error')
+        
+        instance = super().create(validated_data)
+        return instance
+        
 class CandidateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CandidateModel
