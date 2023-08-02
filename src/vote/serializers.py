@@ -14,7 +14,7 @@ class VoteSerializer(serializers.ModelSerializer):
         finger_print = validated_data.get('finger_print')
         
         if VoteModel.objects.filter(category=category, ipv4=ipv4, finger_print=finger_print).exists():
-            raise serializers.ValidationError('Error')
+            raise serializers.ValidationError('You can only vote once per category!')
         
         instance = super().create(validated_data)
         return instance
