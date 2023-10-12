@@ -44,6 +44,10 @@ class CategoryViewSet(ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         if not request.user.has_perm('vote.delete_categorymodel'):
             return Response({'message': 'You do not have permission to access this resource.'}, status=403)
+        
+        if CategoryModel.objects.get(id=kwargs['pk']).candidates.exists():
+            return Response({'message': 'You can not delete the category since it has candidates init.'}, status=400)
+        
         return super().destroy(request, *args, **kwargs)        
 
 class CandidateViewSet(ModelViewSet):
