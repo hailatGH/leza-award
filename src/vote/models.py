@@ -20,15 +20,15 @@ class CategoryModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def save(self, *args, **kwargs):
-        image = Image.open(self.category_coverImage)
-        image = image.convert('RGB')
-        image = ImageOps.exif_transpose(image)
-        image_io = BytesIO()
-        image.save(image_io, "JPEG", optimize=True, quality=50)
-        compressed_image = File(image_io, name=str(self.category_coverImage))
-        self.category_coverImage = compressed_image
-        super(CategoryModel, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     image = Image.open(self.category_coverImage)
+    #     image = image.convert('RGB')
+    #     image = ImageOps.exif_transpose(image)
+    #     image_io = BytesIO()
+    #     image.save(image_io, "JPEG", optimize=True, quality=50)
+    #     compressed_image = File(image_io, name=str(self.category_coverImage))
+    #     self.category_coverImage = compressed_image
+    #     super(CategoryModel, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.pk}-{self.category_name}"
@@ -47,16 +47,16 @@ class CandidateModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def save(self, *args, **kwargs):
-        image = Image.open(self.candidate_profileImage)
-        image = image.convert('RGB')
-        image = ImageOps.exif_transpose(image)
-        image_io = BytesIO()
-        image.save(image_io, "JPEG", optimize=True, quality=50)
-        compressed_image = File(
-            image_io, name=str(self.candidate_profileImage))
-        self.candidate_profileImage = compressed_image
-        super(CandidateModel, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     image = Image.open(self.candidate_profileImage)
+    #     image = image.convert('RGB')
+    #     image = ImageOps.exif_transpose(image)
+    #     image_io = BytesIO()
+    #     image.save(image_io, "JPEG", optimize=True, quality=50)
+    #     compressed_image = File(
+    #         image_io, name=str(self.candidate_profileImage))
+    #     self.candidate_profileImage = compressed_image
+    #     super(CandidateModel, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.pk}-{self.candidate_name}"
