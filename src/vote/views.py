@@ -8,12 +8,52 @@ from rest_framework.status import HTTP_405_METHOD_NOT_ALLOWED
 
 
 from .models import CategoryModel, CandidateModel, VoteModel
-from .serializers import CategorySerializer, CandidateSerializer, VoteSerializer
+from .serializers import CategorySerializer, CandidateSerializer, VoteSerializer, CategoryNoCandidateSerializer
 from utils.custom_permissions import CustomPermission
 
 class CategoryViewSet(ModelViewSet):
     queryset = CategoryModel.objects.all().order_by('id')
     serializer_class = CategorySerializer
+    permission_classes=[CustomPermission]
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        fetch_top_categories = self.request.query_params.get('fetch_top_categories')
+
+        if fetch_top_categories:
+            queryset = queryset.filter(is_top_category=True)
+
+        return queryset
+    
+    def create(self, request, *args, **kwargs):
+        if not request.user.has_perm('vote.add_categorymodel'):
+            return Response({'message': 'You do not have permission to access this resource.'}, status=403)
+        return super().create(request, *args, **kwargs)
+    
+    def update(self, request, *args, **kwargs):
+        if not request.user.has_perm('vote.change_categorymodel'):
+            return Response({'message': 'You do not have permission to access this resource.'}, status=403)
+        return super().update(request, *args, **kwargs)
+    
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+    
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+        
+    def destroy(self, request, *args, **kwargs):
+        if not request.user.has_perm('vote.delete_categorymodel'):
+            return Response({'message': 'You do not have permission to access this resource.'}, status=403)
+        
+        if CategoryModel.objects.get(id=kwargs['pk']).candidates.exists():
+            return Response({'message': 'You can not delete the category since it has candidates init.'}, status=400)
+        
+        return super().destroy(request, *args, **kwargs)        
+    
+    
+class CategoryNoCandidateViewSet(ModelViewSet):
+    queryset = CategoryModel.objects.all().order_by('id')
+    serializer_class = CategoryNoCandidateSerializer
     permission_classes=[CustomPermission]
     
     def get_queryset(self):

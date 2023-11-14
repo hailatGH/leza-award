@@ -57,3 +57,9 @@ class CategorySerializer(serializers.ModelSerializer):
             candidate_data['vote_percentage_in_the_category'] = (candidate_vote_count / total_category_vote_count) * 100 if total_category_vote_count else 0
                 
         return representation
+    
+class CategoryNoCandidateSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = CategoryModel
+        fields = '__all__'
