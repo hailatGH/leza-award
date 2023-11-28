@@ -10,6 +10,7 @@ from rest_framework.status import HTTP_405_METHOD_NOT_ALLOWED
 from .models import CategoryModel, CandidateModel, VoteModel
 from .serializers import CategorySerializer, CandidateSerializer, VoteSerializer, CategoryNoCandidateSerializer
 from utils.custom_permissions import CustomPermission
+from django.db.models import Count
 
 class CategoryViewSet(ModelViewSet):
     queryset = CategoryModel.objects.all().order_by('id')
@@ -18,6 +19,7 @@ class CategoryViewSet(ModelViewSet):
     
     def get_queryset(self):
         queryset = super().get_queryset()
+        queryset = queryset.annotate(vote_count=Count('votemodel__category')).order_by('-vote_count')
         fetch_top_categories = self.request.query_params.get('fetch_top_categories')
 
         if fetch_top_categories:
@@ -25,6 +27,9 @@ class CategoryViewSet(ModelViewSet):
 
         return queryset
     
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+        
     def create(self, request, *args, **kwargs):
         if not request.user.has_perm('vote.add_categorymodel'):
             return Response({'message': 'You do not have permission to access this resource.'}, status=403)
@@ -37,9 +42,6 @@ class CategoryViewSet(ModelViewSet):
     
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
-    
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
         
     def destroy(self, request, *args, **kwargs):
         if not request.user.has_perm('vote.delete_categorymodel'):
@@ -58,6 +60,7 @@ class CategoryNoCandidateViewSet(ModelViewSet):
     
     def get_queryset(self):
         queryset = super().get_queryset()
+        queryset = queryset.annotate(vote_count=Count('votemodel__category')).order_by('-vote_count')
         fetch_top_categories = self.request.query_params.get('fetch_top_categories')
 
         if fetch_top_categories:
@@ -66,14 +69,10 @@ class CategoryNoCandidateViewSet(ModelViewSet):
         return queryset
     
     def create(self, request, *args, **kwargs):
-        if not request.user.has_perm('vote.add_categorymodel'):
-            return Response({'message': 'You do not have permission to access this resource.'}, status=403)
-        return super().create(request, *args, **kwargs)
+        return Response("Not allowed!", status=status.HTTP_400_BAD_REQUEST)
     
     def update(self, request, *args, **kwargs):
-        if not request.user.has_perm('vote.change_categorymodel'):
-            return Response({'message': 'You do not have permission to access this resource.'}, status=403)
-        return super().update(request, *args, **kwargs)
+        return Response("Not allowed!", status=status.HTTP_400_BAD_REQUEST)
     
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
@@ -82,18 +81,17 @@ class CategoryNoCandidateViewSet(ModelViewSet):
         return super().list(request, *args, **kwargs)
         
     def destroy(self, request, *args, **kwargs):
-        if not request.user.has_perm('vote.delete_categorymodel'):
-            return Response({'message': 'You do not have permission to access this resource.'}, status=403)
-        
-        if CategoryModel.objects.get(id=kwargs['pk']).candidates.exists():
-            return Response({'message': 'You can not delete the category since it has candidates init.'}, status=400)
-        
-        return super().destroy(request, *args, **kwargs)        
+        return Response("Not allowed!", status=status.HTTP_400_BAD_REQUEST)   
 
 class CandidateViewSet(ModelViewSet):
     queryset = CandidateModel.objects.all().order_by('id')
     serializer_class = CandidateSerializer
     permission_classes=[CustomPermission]
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.annotate(vote_count=Count('votemodel__candidate')).order_by('-vote_count')
+        return queryset 
     
     def create(self, request, *args, **kwargs):
         if not request.user.has_perm('vote.add_candidatemodel'):
