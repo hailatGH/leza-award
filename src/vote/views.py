@@ -136,8 +136,15 @@ class VoteViewSet(ModelViewSet):
         end_of_week = start_of_week + timedelta(days=6)
         
         start_of_month = date(today.year, today.month, 1)
-        end_of_month = date(today.year, today.month + 1, 1) - timedelta(days=1)
         
+        next_month = today.month + 1
+        next_year = today.year
+        
+        if next_month > 12:
+            next_month = 1  # Reset month to January
+            next_year += 1   # Increment the year
+
+        end_of_month = date(next_year, next_month, 1) - timedelta(days=1)
        
         if category_id:
             category_vote = self.queryset.filter(category=int(category_id))
