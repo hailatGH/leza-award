@@ -151,6 +151,7 @@ class VoteViewSet(ModelViewSet):
             response["category_votes_of_the_day"] = category_vote.filter(created_at__date=today).count()
             response["category_votes_of_the_week"] = category_vote.filter(created_at__date__range=[start_of_week, end_of_week]).count()
             response["category_votes_of_the_month"] = category_vote.filter(created_at__date__range=[start_of_month, end_of_month]).count()
+            response["total_category_votes"] = category_vote.count()
             return Response(response, status=status.HTTP_200_OK)
         
         if candidate_id:
@@ -158,11 +159,13 @@ class VoteViewSet(ModelViewSet):
             response["candidate_votes_of_the_day"] = candidate_vote.filter(created_at__date=today).count()
             response["candidate_votes_of_the_week"] = candidate_vote.filter(created_at__date__range=[start_of_week, end_of_week]).count()
             response["candidate_votes_of_the_month"] = candidate_vote.filter(created_at__date__range=[start_of_month, end_of_month]).count()
+            response["total_candidate_votes"] = candidate_vote.count()
             return Response(response, status=status.HTTP_200_OK)
         
         response["total_votes_of_the_day"] = self.queryset.filter(created_at__date=today).count()
         response["total_votes_of_the_week"] = self.queryset.filter(created_at__date__range=[start_of_week, end_of_week]).count()
         response["total_votes_of_the_month"] = self.queryset.filter(created_at__date__range=[start_of_month, end_of_month]).count()
+        response["total_votes"] = self.queryset.count()
 
         return Response(response, status=status.HTTP_200_OK)
     
